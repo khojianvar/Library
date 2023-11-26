@@ -132,7 +132,10 @@ namespace Library.Controllers
 
                 return View(bookVM);
             }
-            return View(_context.Books);
+            else
+            {
+                return View(_context.Books.ToList());
+            }
         }
 
         // GET: Books/Details/5
@@ -168,7 +171,7 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,Price,CategoryId")] Book book)
         {
-            if (ModelState.IsValid)
+            if (book != null)
             {
                 _context.Add(book);
                 await _context.SaveChangesAsync();
@@ -207,7 +210,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (book != null)
             {
                 try
                 {

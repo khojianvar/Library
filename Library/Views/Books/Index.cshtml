@@ -7,24 +7,20 @@
 <h1>Book</h1>
 
 <form asp-controller="Books" asp-action="Index" method="post">
-    <div class="btn-group" role="group" aria-label="Basic example">
-        <p>
-            <div class="d-flex">
-                    <div class="form-outline search-input">
-                        <input type="text" class="form-control input" placeholder="Search student"
-                                name="SearchString" value="@ViewData["CurrentSearch"]" />
-                    </div>
-                    <button type="submit" value="Search" class="btn btn-outline-dark ml-2 mr-2">
-                        Search<i class="fa fa-search"></i>
-                    </button>
-                <select asp-for="Category" asp-items="Model.Categories" class="form-select" aria-label="Select category">
-                    <option>Category</option>
-                </select>
+    <div class ="d-flex justify-content-between">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <div class="form-outline search-input">
+                <input type="text" class="form-control input" placeholder="Search student"
+                        name="SearchString" value="@ViewData["CurrentSearch"]" />
             </div>
-        </p>
-        <p>
-            <a class="btn btn-outline-success" asp-action="Create">Create</a>
-        </p>
+            <button type="submit" value="Search" class="btn btn-outline-dark btn-sm">
+                Search<i class="fa fa-search"></i>
+            </button>
+            <select asp-for="Category" asp-items="Model.Categories" class="form-select" aria-label="Select category">
+                <option>Category</option>
+            </select>
+        </div>
+        <a class="btn btn-outline-success mb-3" asp-action="Create">Create</a>
     </div>
 </form>
 

@@ -6,18 +6,23 @@
 
 <h1>Category</h1>
 
-<div class="d-flex justify-content-between">
-    <div class="form-outline search-input">
-        <input type="text" class="form-control input" placeholder="Search category"
-                name="SearchString" value="@ViewData["CurrentSearch"]" />
+<form asp-controller="Categories" asp-action="Index" method="post">
+    <div class="d-flex justify-content-between">
+        <div class="btn-group" role="group" aria-label="Basic example">
+            <div class="form-outline search-input">
+            <input type="text" class="form-control input" placeholder="Search category"
+                    name="SearchString" value="@ViewData["CurrentSearch"]" />
+            </div>
+            <button type="submit" value="Search" class="btn btn-outline-dark btn-sm">
+                Search<i class="fa fa-search"></i>
+            </button>
+        </div>
+
+        <p>
+            <a class="btn btn-outline-success" asp-action="Create">Create</a>
+        </p>
     </div>
-    <button type="submit" value="Search" class="btn btn-outline-dark ml-2 mr-2">
-        Search<i class="fa fa-search"></i>
-    </button>
-    <p>
-        <a class="btn btn-outline-success" asp-action="Create">Create</a>
-    </p>
-</div>
+</form>
 
 <table class="table table-hover">
     <thead>

@@ -22,42 +22,30 @@ namespace Library.Controllers
         // GET: Authors
         public async Task<IActionResult> Index(string sortOrder, string? searchString)
         {
-            var authorss = _context.Authors.ToList();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["FirstNameSort"] = sortOrder == "firstName_asc" ? "firstName_desc" : "firstName_asc";
+            ViewData["LastNameSort"] = sortOrder == "lastName_asc" ? "lastName_desc" : "lastName_asc";
+            ViewData["AgeSort"] = sortOrder == "age_asc" ? "age_desc" : "age_asc";
 
-            if (searchString == null)
+            var authors = _context.Authors.AsQueryable();
+
+            if(searchString != null)
             {
-                var authors = authorss.AsQueryable();
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["FirstNameSort"] = sortOrder == "firstName_asc" ? "firstName_desc" : "firstName_asc";
-                ViewData["LastNameSort"] = sortOrder == "lastName_asc" ? "lastName_desc" : "lastName_asc";
-                ViewData["AgeSort"] = sortOrder == "age_asc" ? "age_desc" : "age_asc";
-
-                authors = sortOrder switch
-                {
-                    "firstName_asc" => authors.OrderBy(x => x.FirstName),
-                    "firstName_desc" => authors.OrderByDescending(x => x.FirstName),
-                    "lastName_asc" => authors.OrderBy(x => x.LastName),
-                    "lastName_desc" => authors.OrderByDescending(x => x.LastName),
-                    "age_asc" => authors.OrderBy(x => x.Age),
-                    "age_desc" => authors.OrderByDescending(x => x.Age),
-                    _ => authors.OrderBy(x => x.FirstName)
-                };
-                return View(authors);
+                authors = authors
+                .Where(s => s.FirstName.ToLower().Contains(searchString.ToLower()))
+                .AsQueryable();
             }
 
-            authorss = await _context.Authors
-            .Where(s => s.FirstName.ToLower().Contains(searchString.ToLower()))
-            .ToListAsync();
-
-            return View(authorss);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> Index(string? searchString)
-        {
-            var authors = await _context.Authors
-                .Where(s => s.FirstName.ToLower().Contains(searchString.ToLower()))
-                .ToListAsync();
+            authors = sortOrder switch
+            {
+                "firstName_asc" => authors.OrderBy(x => x.FirstName),
+                "firstName_desc" => authors.OrderByDescending(x => x.FirstName),
+                "lastName_asc" => authors.OrderBy(x => x.LastName),
+                "lastName_desc" => authors.OrderByDescending(x => x.LastName),
+                "age_asc" => authors.OrderBy(x => x.Age),
+                "age_desc" => authors.OrderByDescending(x => x.Age),
+                _ => authors.OrderBy(x => x.FirstName)
+            };
 
             return View(authors);
         }
@@ -93,7 +81,7 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,FirstName,LastName,Age,Email,PhoneNumber")] Author author)
         {
-            if (ModelState.IsValid)
+            if (author != null)
             {
                 _context.Add(author);
                 await _context.SaveChangesAsync();
@@ -130,7 +118,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (author != null)
             {
                 try
                 {

@@ -23,29 +23,26 @@ namespace Library.Controllers
         // GET: Categories
         public async Task<IActionResult> Index(string sortOrder, string? searchString)
         {
-            var categoriess = _context.Categories.ToList();
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSort"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
 
-            if (searchString == null)
+            var categories = _context.Categories.AsQueryable();
+
+            if (searchString != null)
             {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["NameSort"] = sortOrder == "name_asc" ? "name_desc" : "name_asc";
-
-                var categories = categoriess.AsQueryable();
-
-                categories = sortOrder switch
-                {
-                    "name_asc" => categories.OrderBy(x => x.Name),
-                    "name_desc" => categories.OrderByDescending(x => x.Name),
-                    _ => categories.OrderBy(x => x.Name)
-                };
-
-                return View(categories);
+                categories = categories
+                .Where(s => s.Name.ToLower().Contains(searchString.ToLower()))
+                .AsQueryable();
             }
-            categoriess = await _context.Categories
-            .Where(s => s.Name.ToLower().Contains(searchString.ToLower()))
-            .ToListAsync();
 
-            return View(categoriess);
+            categories = sortOrder switch
+            {
+                "name_asc" => categories.OrderBy(x => x.Name),
+                "name_desc" => categories.OrderByDescending(x => x.Name),
+                _ => categories.OrderBy(x => x.Name)
+            };
+
+            return View(categories);
         }
 
         // GET: Categories/Details/5
@@ -79,7 +76,7 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Category category)
         {
-            if (ModelState.IsValid)
+            if (category != null)
             {
                 _context.Add(category);
                 await _context.SaveChangesAsync();
@@ -116,7 +113,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (category != null)
             {
                 try
                 {

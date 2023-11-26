@@ -21,30 +21,37 @@ namespace Library.Controllers
         }
 
         // GET: Publications
-        public async Task<IActionResult> Index(string sortOrder)
+        public async Task<IActionResult> Index(string sortOrder, string? searchString)
         {
-                ViewData["CurrentSort"] = sortOrder;
-                ViewData["PublishedDateSort"] = sortOrder == "publishedDate_asc" ? "publishedDate_desc" : "publishedDate_asc";
-                ViewData["AuthorSort"] = sortOrder == "author_asc" ? "author_desc" : "author_asc";
-                ViewData["BookSort"] = sortOrder == "book_asc" ? "book_desc" : "book_asc";
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["PublishedDateSort"] = sortOrder == "publishedDate_asc" ? "publishedDate_desc" : "publishedDate_asc";
+            ViewData["AuthorSort"] = sortOrder == "author_asc" ? "author_desc" : "author_asc";
+            ViewData["BookSort"] = sortOrder == "book_asc" ? "book_desc" : "book_asc";
 
-                var publications = _context.Publications.AsQueryable();
+            var publications = _context.Publications.AsQueryable();
 
-                publications = sortOrder switch
-                {
-                    "publishedDate_asc" => publications.OrderBy(x => x.PublishedDate),
-                    "publishedDate_desc" => publications.OrderByDescending(x => x.PublishedDate),
-                    "author_asc" => publications.OrderBy(x => x.Author.FirstName),
-                    "author_desc" => publications.OrderByDescending(x => x.Author.FirstName),
-                    "book_asc" => publications.OrderBy(x => x.Book.Title),
-                    "book_desc" => publications.OrderByDescending(x => x.Book.Title),
-                    _ => publications.OrderBy(x => x.Author.FirstName)
-                };
-
-                var libraryDbContext = publications.Include(p => p.Author).Include(p => p.Book);
-
-                return View(await libraryDbContext.ToListAsync());
+            if (searchString != null)
+            {
+                publications = publications
+                .Where(s => s.Author.FirstName.ToLower().Contains(searchString.ToLower()))
+                .AsQueryable();
             }
+
+            publications = sortOrder switch
+            {
+                "publishedDate_asc" => publications.OrderBy(x => x.PublishedDate),
+                "publishedDate_desc" => publications.OrderByDescending(x => x.PublishedDate),
+                "author_asc" => publications.OrderBy(x => x.Author.FirstName),
+                "author_desc" => publications.OrderByDescending(x => x.Author.FirstName),
+                "book_asc" => publications.OrderBy(x => x.Book.Title),
+                "book_desc" => publications.OrderByDescending(x => x.Book.Title),
+                _ => publications.OrderBy(x => x.Author.FirstName)
+            };
+
+            var libraryDbContext = publications.Include(p => p.Author).Include(p => p.Book);
+
+            return View(await libraryDbContext.ToListAsync());
+        }
 
         // GET: Publications/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -70,7 +77,7 @@ namespace Library.Controllers
         public IActionResult Create()
         {
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName");
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Description");
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title");
             return View();
         }
 
@@ -81,14 +88,14 @@ namespace Library.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,PublishedDate,AuthorId,BookId")] Publication publication)
         {
-            if (ModelState.IsValid)
+            if (publication != null)
             {
-                _context.Add(publication);
+                _context.Publications.Add(publication);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName", publication.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Description", publication.BookId);
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", publication.BookId);
             return View(publication);
         }
 
@@ -106,7 +113,7 @@ namespace Library.Controllers
                 return NotFound();
             }
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName", publication.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Description", publication.BookId);
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", publication.BookId);
             return View(publication);
         }
 
@@ -122,7 +129,7 @@ namespace Library.Controllers
                 return NotFound();
             }
 
-            if (ModelState.IsValid)
+            if (publication != null)
             {
                 try
                 {
@@ -143,7 +150,7 @@ namespace Library.Controllers
                 return RedirectToAction(nameof(Index));
             }
             ViewData["AuthorId"] = new SelectList(_context.Authors, "Id", "FirstName", publication.AuthorId);
-            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Description", publication.BookId);
+            ViewData["BookId"] = new SelectList(_context.Books, "Id", "Title", publication.BookId);
             return View(publication);
         }
 

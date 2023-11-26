@@ -19,6 +19,7 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-outline-danger" asp-action="Delete" asp-route-id="@Model?.Id">Delete</a> |
+    <a class="btn btn-outline-success" asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
+    <a class="btn btn-outline-info" asp-action="Index">Back to List</a>
 </div>
