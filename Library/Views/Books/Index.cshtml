@@ -13,10 +13,10 @@
                 <input type="text" class="form-control input" placeholder="Search student"
                         name="SearchString" value="@ViewData["CurrentSearch"]" />
             </div>
-            <button type="submit" value="Search" class="btn btn-outline-dark btn-sm">
-                Search<i class="fa fa-search"></i>
+            <button type="submit" value="Search" class="btn btn-outline-dark btn-sm mb-3">
+                Search
             </button>
-            <select asp-for="Category" asp-items="Model.Categories" class="form-select" aria-label="Select category">
+            <select asp-for="Category" asp-items="Model.Categories" class="form-select mb-3" aria-label="Select category">
                 <option>Category</option>
             </select>
         </div>
