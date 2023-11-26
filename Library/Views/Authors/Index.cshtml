@@ -1,0 +1,72 @@
+﻿@model IEnumerable<Library.Models.Author>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Author</h1>
+
+
+<div class="form-outline search-input">
+    <input type="text" class="form-control input" placeholder="Search Authors"
+            name="SearchString" value="@ViewData["CurrentSearch"]" />
+</div>
+<button type="submit" value="Search" class="btn btn-outline-dark ml-2 mr-2">
+    Search<i class="fa fa-search"></i>
+</button>
+<p>
+    <a class="btn btn-outline-success" asp-action="Create">Create</a>
+</p>
+
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-primary">
+            <th>
+                <a asp-route-sortOrder="@ViewData["FirstNameSort"]">
+                    @Html.DisplayName("FirstName") <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-route-sortOrder="@ViewData["LastNameSort"]">
+                    @Html.DisplayNameFor(model => model.LastName) <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-route-sortOrder="@ViewData["AgeSort"]">
+                    @Html.DisplayNameFor(model => model.Age) <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+         <tr class="table-secondary">
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.FirstName)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.LastName)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Age)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Email)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
