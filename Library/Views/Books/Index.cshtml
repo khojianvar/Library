@@ -1,0 +1,77 @@
+﻿@model Library.ViewModel.BooksViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Book</h1>
+
+<form asp-controller="Books" asp-action="Index" method="post">
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <p>
+            <div class="d-flex">
+                    <div class="form-outline search-input">
+                        <input type="text" class="form-control input" placeholder="Search student"
+                                name="SearchString" value="@ViewData["CurrentSearch"]" />
+                    </div>
+                    <button type="submit" value="Search" class="btn btn-outline-dark ml-2 mr-2">
+                        Search<i class="fa fa-search"></i>
+                    </button>
+                <select asp-for="Category" asp-items="Model.Categories" class="form-select" aria-label="Select category">
+                    <option>Category</option>
+                </select>
+            </div>
+        </p>
+        <p>
+            <a class="btn btn-outline-success" asp-action="Create">Create</a>
+        </p>
+    </div>
+</form>
+
+<table class="table table-hover">
+    <thead>
+        <tr class="table-primary">
+            <th>
+                <a asp-route-sortOrder="@ViewData["TitleSort"]">
+                    @Html.DisplayName("Title") <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-route-sortOrder="@ViewData["DescriptionSort"]">
+                    @Html.DisplayName("Description") <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-route-sortOrder="@ViewData["PriceSort"]">
+                    @Html.DisplayName("Price") <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th>
+                <a asp-route-sortOrder="@ViewData["CategorySort"]">
+                    @Html.DisplayName("Category") <i class="fa fa-sort"></i>
+                </a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.Books) {
+        <tr class="table-secondary">
+            <td>
+                <a asp-action="Details" asp-route-id="@item.Id">
+                    @Html.DisplayFor(modelItem => item.Title)
+                </a>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Description)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Category.Name)
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
