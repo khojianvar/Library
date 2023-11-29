@@ -4259,7 +4259,7 @@ textarea.form-control-lg {
     --bs-nav-link-disabled-color: var(--bs-secondary-color);
     display: flex;
     flex-wrap: wrap;
-    padding-left: 0;
+    padding-left: 0px;
     margin-bottom: 0;
     list-style: none;
 }
@@ -4276,13 +4276,20 @@ textarea.form-control-lg {
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
 }
 
-@media (prefers-reduced-motion: reduce) {
-    .nav-link {
-        transition: none;
-    }
+.nav-link i {
+    padding-right: 15px;
+}
+.navbar-brand i {
+    padding-right: 15px;
 }
 
-.nav-link:hover, .nav-link:focus {
+@media (prefers-reduced-motion: reduce) {
+    .nav-link {
+            transition: none;
+        }
+    }
+
+    .nav-link:hover, .nav-link:focus {
     color: var(--bs-nav-link-hover-color);
 }
 
